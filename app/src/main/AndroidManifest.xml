@@ -13,7 +13,7 @@
         android:theme="@style/Theme.NotesApp"
         tools:targetApi="31">
         <activity
-            android:name=".AdicionarNotaActivity"
+            android:name=".activity.AdicionarNotaActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
