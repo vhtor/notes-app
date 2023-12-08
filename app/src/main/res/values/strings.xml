@@ -8,4 +8,8 @@
     <string name="titulo_nota">Título</string>
     <string name="descricao_nota">Descição</string>
     <string name="atualizar_nota_heading">Atualizar Nota</string>
+    <string name="concluida">Concluída</string>
+    <string name="prioridade_baixa">Baixa</string>
+    <string name="prioridade_media">Média</string>
+    <string name="prioridade_alta">Alta</string>
 </resources>

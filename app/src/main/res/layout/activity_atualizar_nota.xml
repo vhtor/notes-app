@@ -59,20 +59,63 @@
     <EditText
         android:id="@+id/atualizar_descricao_nota_input"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:gravity="top"
+        android:layout_height="350dp"
         android:layout_marginTop="16dp"
         android:background="@drawable/orange_border"
         android:fontFamily="@font/poppins"
-        android:inputType="text"
-        android:maxLines="1"
-        android:padding="12dp"
+        android:gravity="top"
         android:hint="@string/conteudo_nota_input_hint"
+        android:inputType="textMultiLine"
+        android:padding="12dp"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/atualizar_titulo_nota_input" />
+
+    <CheckBox
+        android:id="@+id/atualizar_checkBoxConcluida"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins"
+        android:text="@string/concluida"
+        android:layout_marginTop="16dp"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@+id/atualizar_descricao_nota_input"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <RadioGroup
+        android:id="@+id/atualizar_prioridadeRadioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/atualizar_checkBoxConcluida">
+
+        <RadioButton
+            android:id="@+id/atualizar_baixaRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:fontFamily="@font/poppins"
+            android:text="@string/prioridade_baixa"
+            android:textSize="16sp" />
+
+        <RadioButton
+            android:id="@+id/atualizar_mediaRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins"
+            android:text="@string/prioridade_media"
+            android:textSize="16sp" />
+
+        <RadioButton
+            android:id="@+id/atualizar_altaRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins"
+            android:text="@string/prioridade_alta"
+            android:textSize="16sp" />
+    </RadioGroup>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

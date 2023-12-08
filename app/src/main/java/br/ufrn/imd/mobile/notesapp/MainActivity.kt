@@ -8,6 +8,7 @@ import br.ufrn.imd.mobile.notesapp.activity.AdicionarNotaActivity
 import br.ufrn.imd.mobile.notesapp.adapter.NotasAdapter
 import br.ufrn.imd.mobile.notesapp.database.NotasDatabaseHelper
 import br.ufrn.imd.mobile.notesapp.databinding.ActivityMainBinding
+import br.ufrn.imd.mobile.notesapp.domain.Nota
 
 class MainActivity : AppCompatActivity() {
 
@@ -21,7 +22,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         db = NotasDatabaseHelper(this)
-        notasAdapter = NotasAdapter(db.getAllNotas(), this)
+        val notas = carregarNotasOrdenadas()
+        notasAdapter = NotasAdapter(notas, this)
 
         binding.notasRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.notasRecyclerView.adapter = notasAdapter
@@ -32,8 +34,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun carregarNotasOrdenadas(): List<Nota> {
+        val notas = db.getAllNotas()
+        val notasConcluidas = notas.filter { it.concluida }
+        val notasNaoConcluidas = notas.filterNot { it.concluida }
+
+        return notasNaoConcluidas + notasConcluidas
+    }
+
     override fun onResume() {
         super.onResume()
-        notasAdapter.refreshData(db.getAllNotas())
+        val notasOrdenadas = carregarNotasOrdenadas()
+        notasAdapter.refreshData(notasOrdenadas)
     }
 }

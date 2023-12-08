@@ -13,14 +13,18 @@ class NotasDatabaseHelper(context: Context) : SQLiteOpenHelper(context, BANCO_NO
         private const val COLUNA_ID = "id"
         private const val COLUNA_TITULO = "titulo"
         private const val COLUNA_DESCRICAO = "descricao"
-        private const val BANCO_VERSAO = 1
+        private const val COLUNA_CONCLUIDA = "concluida"
+        private const val COLUNA_PRIORIDADE = "prioridade"
+        private const val BANCO_VERSAO = 2
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
         val createTableQuery = "CREATE TABLE $TABELA_NOME (" +
                 "$COLUNA_ID INTEGER PRIMARY KEY, " +
                 "$COLUNA_TITULO TEXT, " +
-                "$COLUNA_DESCRICAO TEXT)"
+                "$COLUNA_DESCRICAO TEXT, " +
+                "$COLUNA_CONCLUIDA INTEGER, " +
+                "$COLUNA_PRIORIDADE TEXT)"
 
         db?.execSQL(createTableQuery)
     }
@@ -36,6 +40,8 @@ class NotasDatabaseHelper(context: Context) : SQLiteOpenHelper(context, BANCO_NO
         val valores = ContentValues().apply {
             put(COLUNA_TITULO, nota.titulo)
             put(COLUNA_DESCRICAO, nota.descricao)
+            put(COLUNA_CONCLUIDA, if (nota.concluida) 1 else 0)
+            put(COLUNA_PRIORIDADE, nota.prioridade)
         }
         db.insert(TABELA_NOME, null, valores)
         db.close()
@@ -46,28 +52,42 @@ class NotasDatabaseHelper(context: Context) : SQLiteOpenHelper(context, BANCO_NO
         val valores = ContentValues().apply {
             put(COLUNA_TITULO, nota.titulo)
             put(COLUNA_DESCRICAO, nota.descricao)
+            put(COLUNA_CONCLUIDA, if (nota.concluida) 1 else 0)
+            put(COLUNA_PRIORIDADE, nota.prioridade)
         }
         db.update(TABELA_NOME, valores, "$COLUNA_ID = ?", arrayOf(nota.id.toString()))
         db.close()
     }
 
     fun getAllNotas(): List<Nota> {
-        val notasList = mutableListOf<Nota>()
+        val notas = mutableListOf<Nota>()
         val db = readableDatabase
-        val query = "SELECT * FROM $TABELA_NOME"
-        val cursor = db.rawQuery(query, null)
+        val cursor = db.rawQuery(
+            "SELECT * FROM $TABELA_NOME ORDER BY $COLUNA_CONCLUIDA",
+            null
+        )
 
-        while (cursor.moveToNext()) {
-            val id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUNA_ID))
-            val titulo = cursor.getString(cursor.getColumnIndexOrThrow(COLUNA_TITULO))
-            val descricao = cursor.getString(cursor.getColumnIndexOrThrow(COLUNA_DESCRICAO))
+        with(cursor) {
+            while (moveToNext()) {
+                val idIndex = getColumnIndex(COLUNA_ID)
+                val tituloIndex = getColumnIndex(COLUNA_TITULO)
+                val descricaoIndex = getColumnIndex(COLUNA_DESCRICAO)
+                val concluidaIndex = getColumnIndex(COLUNA_CONCLUIDA)
+                val prioridadeIndex = getColumnIndex(COLUNA_PRIORIDADE)
 
-            val nota = Nota(id, titulo, descricao)
-            notasList.add(nota)
+                val id = if (idIndex >= 0) getInt(idIndex) else -1
+                val titulo = if (tituloIndex >= 0) getString(tituloIndex) else ""
+                val descricao = if (descricaoIndex >= 0) getString(descricaoIndex) else ""
+                val concluida = if (concluidaIndex >= 0) getInt(concluidaIndex) == 1 else false
+                val prioridade = if (prioridadeIndex >= 0) getString(prioridadeIndex) else ""
+
+                notas.add(Nota(id, titulo, descricao, concluida, prioridade))
+            }
         }
+
         cursor.close()
         db.close()
-        return notasList
+        return notas
     }
 
     fun getNotaById(id: Int): Nota? {
@@ -78,8 +98,10 @@ class NotasDatabaseHelper(context: Context) : SQLiteOpenHelper(context, BANCO_NO
         if (cursor.moveToNext()) {
             val titulo = cursor.getString(cursor.getColumnIndexOrThrow(COLUNA_TITULO))
             val descricao = cursor.getString(cursor.getColumnIndexOrThrow(COLUNA_DESCRICAO))
+            val concluida = cursor.getInt(cursor.getColumnIndexOrThrow(COLUNA_CONCLUIDA)) == 1
+            val prioridade = cursor.getString(cursor.getColumnIndexOrThrow(COLUNA_PRIORIDADE))
 
-            val nota = Nota(id, titulo, descricao)
+            val nota = Nota(id, titulo, descricao, concluida, prioridade)
             cursor.close()
             db.close()
             return nota

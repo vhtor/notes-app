@@ -2,6 +2,7 @@ package br.ufrn.imd.mobile.notesapp.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.RadioButton
 import android.widget.Toast
 import br.ufrn.imd.mobile.notesapp.R
 import br.ufrn.imd.mobile.notesapp.database.NotasDatabaseHelper
@@ -19,10 +20,31 @@ class AdicionarNotaActivity : AppCompatActivity() {
 
         db = NotasDatabaseHelper(this)
 
+        binding.checkBoxConcluida.setOnCheckedChangeListener { _, isChecked ->
+            isChecked?.let {
+                binding.checkBoxConcluida.isChecked = it
+            }
+        }
+
         binding.botaoSalvarNota.setOnClickListener {
             val titulo = binding.tituloNotaInput.text.toString()
             val descricao = binding.descricaoNotaInput.text.toString()
-            val nota = Nota(0, titulo, descricao)
+            val concluida = binding.checkBoxConcluida.isChecked
+
+            val prioridadeRadioButton = findViewById<RadioButton>(binding.prioridadeRadioGroup.checkedRadioButtonId)
+            val prioridade = when (binding.prioridadeRadioGroup.checkedRadioButtonId) {
+                R.id.baixaRadioButton -> "Baixa"
+                R.id.mediaRadioButton -> "Média"
+                R.id.altaRadioButton -> "Alta"
+                else -> "Média"
+            }
+
+            if (titulo.isEmpty() || descricao.isEmpty()) {
+                Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val nota = Nota(0, titulo, descricao, concluida, prioridade)
             db.inserirNota(nota)
             finish()
 
