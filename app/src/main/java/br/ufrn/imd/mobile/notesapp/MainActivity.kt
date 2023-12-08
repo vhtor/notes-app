@@ -36,10 +36,15 @@ class MainActivity : AppCompatActivity() {
 
     private fun carregarNotasOrdenadas(): List<Nota> {
         val notas = db.getAllNotas()
-        val notasConcluidas = notas.filter { it.concluida }
         val notasNaoConcluidas = notas.filterNot { it.concluida }
+        val notasConcluidas = notas.filter { it.concluida }
 
-        return notasNaoConcluidas + notasConcluidas
+        val notasNaoConcluidasOrdenadas = notasNaoConcluidas.sortedBy { it.prioridade }
+        val notasConcluidasOrdenadas = notasConcluidas.sortedBy { it.prioridade }
+
+        val notasOrdenadas = notasNaoConcluidasOrdenadas + notasConcluidasOrdenadas
+
+        return notasOrdenadas
     }
 
     override fun onResume() {

@@ -7,6 +7,7 @@ import br.ufrn.imd.mobile.notesapp.R
 import br.ufrn.imd.mobile.notesapp.database.NotasDatabaseHelper
 import br.ufrn.imd.mobile.notesapp.databinding.ActivityAtualizarNotaBinding
 import br.ufrn.imd.mobile.notesapp.domain.Nota
+import br.ufrn.imd.mobile.notesapp.domain.Prioridade
 
 class AtualizarNotaActivity : AppCompatActivity() {
 
@@ -33,10 +34,10 @@ class AtualizarNotaActivity : AppCompatActivity() {
         binding.atualizarCheckBoxConcluida.isChecked = nota?.concluida ?: false
 
         when (nota?.prioridade) {
-            "Baixa" -> binding.atualizarBaixaRadioButton.isChecked = true
-            "Média" -> binding.atualizarMediaRadioButton.isChecked = true
-            "Alta" -> binding.atualizarAltaRadioButton.isChecked = true
-            else -> {}
+            Prioridade.BAIXA -> binding.atualizarBaixaRadioButton.isChecked = true
+            Prioridade.MEDIA -> binding.atualizarMediaRadioButton.isChecked = true
+            Prioridade.ALTA -> binding.atualizarAltaRadioButton.isChecked = true
+            else -> binding.atualizarMediaRadioButton.isChecked = true
         }
 
         binding.botaoSalvarNota.setOnClickListener {
@@ -46,10 +47,10 @@ class AtualizarNotaActivity : AppCompatActivity() {
 
             val prioridadeRadioButtonId = binding.atualizarPrioridadeRadioGroup.checkedRadioButtonId
             val prioridade = when (prioridadeRadioButtonId) {
-                R.id.atualizar_baixaRadioButton -> "Baixa"
-                R.id.atualizar_mediaRadioButton -> "Média"
-                R.id.atualizar_altaRadioButton -> "Alta"
-                else -> "Média"
+                R.id.atualizar_baixaRadioButton -> Prioridade.BAIXA
+                R.id.atualizar_mediaRadioButton -> Prioridade.MEDIA
+                R.id.atualizar_altaRadioButton -> Prioridade.ALTA
+                else -> Prioridade.MEDIA
             }
 
             if (titulo.isEmpty() || descricao.isEmpty()) {

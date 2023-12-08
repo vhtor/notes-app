@@ -5,6 +5,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import br.ufrn.imd.mobile.notesapp.domain.Nota
+import br.ufrn.imd.mobile.notesapp.domain.Prioridade
 
 class NotasDatabaseHelper(context: Context) : SQLiteOpenHelper(context, BANCO_NOME, null, BANCO_VERSAO) {
     companion object {
@@ -15,7 +16,7 @@ class NotasDatabaseHelper(context: Context) : SQLiteOpenHelper(context, BANCO_NO
         private const val COLUNA_DESCRICAO = "descricao"
         private const val COLUNA_CONCLUIDA = "concluida"
         private const val COLUNA_PRIORIDADE = "prioridade"
-        private const val BANCO_VERSAO = 2
+        private const val BANCO_VERSAO = 3
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
@@ -24,7 +25,7 @@ class NotasDatabaseHelper(context: Context) : SQLiteOpenHelper(context, BANCO_NO
                 "$COLUNA_TITULO TEXT, " +
                 "$COLUNA_DESCRICAO TEXT, " +
                 "$COLUNA_CONCLUIDA INTEGER, " +
-                "$COLUNA_PRIORIDADE TEXT)"
+                "$COLUNA_PRIORIDADE INTEGER)"
 
         db?.execSQL(createTableQuery)
     }
@@ -41,7 +42,7 @@ class NotasDatabaseHelper(context: Context) : SQLiteOpenHelper(context, BANCO_NO
             put(COLUNA_TITULO, nota.titulo)
             put(COLUNA_DESCRICAO, nota.descricao)
             put(COLUNA_CONCLUIDA, if (nota.concluida) 1 else 0)
-            put(COLUNA_PRIORIDADE, nota.prioridade)
+            put(COLUNA_PRIORIDADE, nota.prioridade.ordinal)
         }
         db.insert(TABELA_NOME, null, valores)
         db.close()
@@ -53,7 +54,7 @@ class NotasDatabaseHelper(context: Context) : SQLiteOpenHelper(context, BANCO_NO
             put(COLUNA_TITULO, nota.titulo)
             put(COLUNA_DESCRICAO, nota.descricao)
             put(COLUNA_CONCLUIDA, if (nota.concluida) 1 else 0)
-            put(COLUNA_PRIORIDADE, nota.prioridade)
+            put(COLUNA_PRIORIDADE, nota.prioridade.ordinal)
         }
         db.update(TABELA_NOME, valores, "$COLUNA_ID = ?", arrayOf(nota.id.toString()))
         db.close()
@@ -79,7 +80,8 @@ class NotasDatabaseHelper(context: Context) : SQLiteOpenHelper(context, BANCO_NO
                 val titulo = if (tituloIndex >= 0) getString(tituloIndex) else ""
                 val descricao = if (descricaoIndex >= 0) getString(descricaoIndex) else ""
                 val concluida = if (concluidaIndex >= 0) getInt(concluidaIndex) == 1 else false
-                val prioridade = if (prioridadeIndex >= 0) getString(prioridadeIndex) else ""
+                val prioridadeInt = if (prioridadeIndex >= 0) getInt(prioridadeIndex) else -1
+                val prioridade = if (prioridadeInt >= 0) Prioridade.entries[prioridadeInt] else Prioridade.MEDIA
 
                 notas.add(Nota(id, titulo, descricao, concluida, prioridade))
             }
@@ -99,7 +101,8 @@ class NotasDatabaseHelper(context: Context) : SQLiteOpenHelper(context, BANCO_NO
             val titulo = cursor.getString(cursor.getColumnIndexOrThrow(COLUNA_TITULO))
             val descricao = cursor.getString(cursor.getColumnIndexOrThrow(COLUNA_DESCRICAO))
             val concluida = cursor.getInt(cursor.getColumnIndexOrThrow(COLUNA_CONCLUIDA)) == 1
-            val prioridade = cursor.getString(cursor.getColumnIndexOrThrow(COLUNA_PRIORIDADE))
+            val prioridadeInt = cursor.getInt(cursor.getColumnIndexOrThrow(COLUNA_PRIORIDADE))
+            val prioridade = Prioridade.entries[prioridadeInt]
 
             val nota = Nota(id, titulo, descricao, concluida, prioridade)
             cursor.close()

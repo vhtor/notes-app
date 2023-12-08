@@ -1,7 +1,9 @@
 package br.ufrn.imd.mobile.notesapp.activity
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import br.ufrn.imd.mobile.notesapp.MainActivity
 import br.ufrn.imd.mobile.notesapp.database.NotasDatabaseHelper
 import br.ufrn.imd.mobile.notesapp.databinding.ActivityDetalhesNotaBinding
 
@@ -26,5 +28,10 @@ class DetalhesNotaActivity : AppCompatActivity() {
         val nota = db.getNotaById(notaId)
         binding.tituloDetalhesTextView.text = nota?.titulo
         binding.descricaoDetalhesTextView.text = nota?.descricao
+
+        binding.botaoVoltar.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        }
     }
 }

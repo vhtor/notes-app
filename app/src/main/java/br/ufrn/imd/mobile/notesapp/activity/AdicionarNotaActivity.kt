@@ -2,12 +2,12 @@ package br.ufrn.imd.mobile.notesapp.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.RadioButton
 import android.widget.Toast
 import br.ufrn.imd.mobile.notesapp.R
 import br.ufrn.imd.mobile.notesapp.database.NotasDatabaseHelper
 import br.ufrn.imd.mobile.notesapp.databinding.ActivityAdicionarNotaBinding
 import br.ufrn.imd.mobile.notesapp.domain.Nota
+import br.ufrn.imd.mobile.notesapp.domain.Prioridade
 
 class AdicionarNotaActivity : AppCompatActivity() {
 
@@ -21,7 +21,7 @@ class AdicionarNotaActivity : AppCompatActivity() {
         db = NotasDatabaseHelper(this)
 
         binding.checkBoxConcluida.setOnCheckedChangeListener { _, isChecked ->
-            isChecked?.let {
+            isChecked.let {
                 binding.checkBoxConcluida.isChecked = it
             }
         }
@@ -31,12 +31,11 @@ class AdicionarNotaActivity : AppCompatActivity() {
             val descricao = binding.descricaoNotaInput.text.toString()
             val concluida = binding.checkBoxConcluida.isChecked
 
-            val prioridadeRadioButton = findViewById<RadioButton>(binding.prioridadeRadioGroup.checkedRadioButtonId)
             val prioridade = when (binding.prioridadeRadioGroup.checkedRadioButtonId) {
-                R.id.baixaRadioButton -> "Baixa"
-                R.id.mediaRadioButton -> "Média"
-                R.id.altaRadioButton -> "Alta"
-                else -> "Média"
+                R.id.baixaRadioButton -> Prioridade.BAIXA
+                R.id.mediaRadioButton -> Prioridade.MEDIA
+                R.id.altaRadioButton -> Prioridade.ALTA
+                else -> Prioridade.MEDIA
             }
 
             if (titulo.isEmpty() || descricao.isEmpty()) {
