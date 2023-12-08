@@ -3,8 +3,9 @@
     <string name="adicionar_nota_heading">Adicionar Nota</string>
     <string name="descricao_botao_adicionar_nota">Adicionar Nota</string>
     <string name="titulo_nota_input_hint">Título da Nota</string>
-    <string name="conteudo_nota_input_hint">Conteúdo da nota</string>
+    <string name="conteudo_nota_input_hint">Conteúdo da Nota</string>
     <string name="notas_heading">Notas</string>
     <string name="titulo_nota">Título</string>
     <string name="descricao_nota">Descição</string>
+    <string name="atualizar_nota_heading">Atualizar Nota</string>
 </resources>
